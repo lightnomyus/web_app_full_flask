@@ -1,8 +1,8 @@
-from flask import render_template, flash, redirect, url_for
+from flask import render_template, flash, redirect, url_for, request
 from flask1 import app, db, bcrypt
 from flask1.simple_forms import RegistrationForm, LoginForm
 from flask1.models import Doctor, Patient, Rec001
-from flask_login import login_user
+from flask_login import login_user, current_user, logout_user, login_required
 
 posts = [
     {
@@ -41,6 +41,8 @@ def about_page():
 
 @app.route('/register', methods=['GET', 'POST'], endpoint='register_page')
 def register_page():
+    if current_user.is_authenticated:
+        return redirect(url_for('home_page'))
     form = RegistrationForm()
     if form.validate_on_submit():
         pass_hash = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
@@ -54,12 +56,31 @@ def register_page():
 
 @app.route('/login', methods=['GET', 'POST'], endpoint='login_page')
 def login_page():
+    if current_user.is_authenticated:
+        return redirect(url_for('home_page'))
     form = LoginForm()
     if form.validate_on_submit():
         user = Doctor.query.filter_by(username=form.username.data).first()
         if user and bcrypt.check_password_hash(user.password, form.password.data):
             login_user(user, remember=form.remember_pass.data)
-            return redirect(url_for('home_page'))
+            next_page = request.args.get('next')  # set next page
+            if next_page:
+                return redirect(next_page)
+            else:
+                return redirect(url_for('home_page'))
         else:
             flash('Login Unsuccessful. Check username and password!', 'danger')
     return render_template('login_form.html', title='Login', form=form)
+
+
+@app.route('/logout', endpoint='logout_page')
+def logout_page():
+    logout_user()
+    flash(f'Logged Out successfully', 'success')
+    return redirect(url_for('home_page'))
+
+
+@app.route('/account', endpoint='account_page')
+@login_required
+def account_page():
+    return render_template('account.html', title='Account')

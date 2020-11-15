@@ -1,0 +1,18 @@
+{% extends 'base_bootstrap.html' %}
+
+
+{% block page_title %}
+    {% if title %}
+        <title>Gab-{{ title }}</title>
+    {% else %}
+        <title>Gab-Home</title>
+    {% endif %}
+{% endblock %}
+
+
+{% block content_customized %}
+    <h1>{{ current_user.username }}</h1>
+    <br>
+    Status = Logged in.
+    <br>
+{% endblock %}
