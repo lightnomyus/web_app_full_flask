@@ -2,7 +2,7 @@ from flask import render_template, flash, redirect, url_for
 from flask1 import app, db, bcrypt
 from flask1.simple_forms import RegistrationForm, LoginForm
 from flask1.models import Doctor, Patient, Rec001
-
+from flask_login import login_user
 
 posts = [
     {
@@ -56,8 +56,9 @@ def register_page():
 def login_page():
     form = LoginForm()
     if form.validate_on_submit():
-        if form.username.data == 'lightnomyus' and form.password.data == 'password':
-            flash('Logged In Successfully', 'success')
+        user = Doctor.query.filter_by(username=form.username.data).first()
+        if user and bcrypt.check_password_hash(user.password, form.password.data):
+            login_user(user, remember=form.remember_pass.data)
             return redirect(url_for('home_page'))
         else:
             flash('Login Unsuccessful. Check username and password!', 'danger')
