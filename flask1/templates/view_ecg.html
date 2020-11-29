@@ -1,0 +1,215 @@
+{% extends 'base_bootstrap.html' %}
+
+
+{% block page_title %}
+    <!-- Script for Chart.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
+
+    {% if title %}
+        <title>Gab-{{ title }}</title>
+    {% else %}
+        <title>Gab-Home</title>
+    {% endif %}
+{% endblock %}
+
+
+{% block content_customized %}
+    <h1>This is View ECG Page</h1>
+    <canvas id="myChart1" width="5000" height="400"></canvas>
+    <p id="caption">Channel 1, Chart size = 5000 * 400 pixels.</p>
+    <br>
+
+    <canvas id="myChart2" width="5000" height="400"></canvas>
+    <p id="caption">Channel 2, Chart size = 5000 * 400 pixels.</p>
+    <br>
+
+    <canvas id="myChart3" width="5000" height="400"></canvas>
+    <!-- bar chart canvas element -->
+    <p id="caption">Channel 3, Chart size = 5000 * 400 pixels.</p>
+    <br>
+
+    <canvas id="myChart4" width="5000" height="400"></canvas>
+    <p id="caption">PPG, Chart size = 5000 * 400 pixels.</p>
+    <br>
+{% endblock %}
+
+{% block additional_scripts %}
+    <script>
+        // Global parameters:
+        // do not resize the chart canvas when its container does (keep at 600x400px)
+        Chart.defaults.global.responsive = false;
+
+        //define char data Channel 1
+        var chartData1 = {
+            labels: [{% for item in labels %}
+                "{{item}}",
+            {% endfor %}],
+            datasets: [{
+                fill: false,
+                lineTension: 0.1,
+                backgroundColor: "rgba(75,192,192,0.4)",
+                borderColor: "rgba(75,192,192,1)",
+                borderCapStyle: 'butt',
+                borderDash: [],
+                borderDashOffset: 0.0,
+                borderJoinStyle: 'miter',
+                pointBorderColor: "rgba(75,192,192,1)",
+                pointBackgroundColor: "#fff",
+                pointBorderWidth: 1,
+                pointRadius: 1,
+                pointHitRadius: 10,
+                data: [{% for item in value1 %}
+                    {{item}},
+                {% endfor %}],
+                spanGaps: false,
+                showLines: false
+            }]
+        }
+        // define the chart data Channel 2
+        var chartData2 = {
+            labels: [{% for item in labels %}
+                "{{item}}",
+            {% endfor %}],
+            datasets: [{
+                fill: false,
+                lineTension: 0.1,
+                backgroundColor: "rgba(75,192,192,0.4)",
+                borderColor: "rgba(75,192,192,1)",
+                borderCapStyle: 'butt',
+                borderDash: [],
+                borderDashOffset: 0.0,
+                borderJoinStyle: 'miter',
+                pointBorderColor: "rgba(75,192,192,1)",
+                pointBackgroundColor: "#fff",
+                pointBorderWidth: 1,
+                pointRadius: 1,
+                pointHitRadius: 10,
+                data: [{% for item in value2 %}
+                    {{item}},
+                {% endfor %}],
+                spanGaps: false,
+                showLines: false
+            }]
+        }
+
+        // define the chart data Channel 3
+        var chartData3 = {
+            labels: [{% for item in labels %}
+                "{{item}}",
+            {% endfor %}],
+            datasets: [{
+                fill: false,
+                lineTension: 0.1,
+                backgroundColor: "rgba(75,192,192,0.4)",
+                borderColor: "rgba(75,192,192,1)",
+                borderCapStyle: 'butt',
+                borderDash: [],
+                borderDashOffset: 0.0,
+                borderJoinStyle: 'miter',
+                pointBorderColor: "rgba(75,192,192,1)",
+                pointBackgroundColor: "#fff",
+                pointBorderWidth: 1,
+                pointRadius: 1,
+                pointHitRadius: 10,
+                data: [{% for item in value3 %}
+                    {{item}},
+                {% endfor %}],
+                spanGaps: false,
+                showLines: false
+            }]
+        }
+
+        // define the chart data PPG
+        var chartData4 = {
+            labels: [{% for item in labels %}
+                "{{item}}",
+            {% endfor %}],
+            datasets: [{
+                fill: false,
+                lineTension: 0.1,
+                backgroundColor: "rgba(75,192,192,0.4)",
+                borderColor: "rgba(75,192,192,1)",
+                borderCapStyle: 'butt',
+                borderDash: [],
+                borderDashOffset: 0.0,
+                borderJoinStyle: 'miter',
+                pointBorderColor: "rgba(75,192,192,1)",
+                pointBackgroundColor: "#fff",
+                pointBorderWidth: 1,
+                pointRadius: 1,
+                pointHitRadius: 10,
+                data: [{% for item in value4 %}
+                    {{item}},
+                {% endfor %}],
+                spanGaps: false,
+                showLines: false
+            }]
+        }
+
+        // get chart canvas
+        var ctx = document.getElementById("myChart1").getContext("2d");
+        var ctx2 = document.getElementById("myChart2").getContext("2d");
+        var ctx3 = document.getElementById("myChart3").getContext("2d");
+        var ctx4 = document.getElementById("myChart4").getContext("2d");
+        // create the chart using the chart canvas
+        var myChart1 = new Chart(ctx, {
+            type: 'line',
+            data: chartData1,
+            options: {
+                title: {
+                    display: true,
+                    text: 'Channel 1 Simulation'
+                },
+                legend: {
+                    display: false
+                }
+            }
+        });
+
+        //chart 2
+        var myChart2 = new Chart(ctx2, {
+            type: 'line',
+            data: chartData2,
+            options: {
+                title: {
+                    display: true,
+                    text: 'Channel 2 Simulation'
+                },
+                legend: {
+                    display: false
+                }
+            }
+        });
+
+        //chart 3
+        var myChart3 = new Chart(ctx3, {
+            type: 'line',
+            data: chartData3,
+            options: {
+                title: {
+                    display: true,
+                    text: 'Channel 3 Simulation'
+                },
+                legend: {
+                    display: false
+                }
+            }
+        });
+
+        //chart 4
+        var myChart4 = new Chart(ctx4, {
+            type: 'line',
+            data: chartData4,
+            options: {
+                title: {
+                    display: true,
+                    text: 'PPG Simulation'
+                },
+                legend: {
+                    display: false
+                }
+            }
+        });
+
+    </script>
+{% endblock %}

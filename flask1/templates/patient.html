@@ -1,0 +1,28 @@
+{% extends 'base_bootstrap.html' %}
+
+
+{% block page_title %}
+    {% if title %}
+        <title>Gab-{{ title }}</title>
+    {% else %}
+        <title>Gab-Home</title>
+    {% endif %}
+{% endblock %}
+
+
+{% block content_customized %}
+    <h1>This is Patient Page</h1>
+    <h2>Patient Details:</h2>
+    <br>
+    Username = {{ patient.username }}.   Patient ID = {{ patient.id }}.
+    <br>
+    List or record(s):
+    <br>
+    {% for i in rec_list %}
+        <p>Record {{ count }} <a href="{{ url_for('ecg_page', ecg_id=i.id) }}">{{ i.record_file }}</a>
+        Status : xxxx
+        Last Updated = {{ i.date_uploaded.strftime('%A, %d-%m-%Y\t %H:%M:%S [UTC time]') }}
+        </p>
+    {% endfor %}
+    <br>
+{% endblock %}

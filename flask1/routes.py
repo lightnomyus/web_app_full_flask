@@ -1,32 +1,21 @@
 from flask import render_template, flash, redirect, url_for, request
 from flask1 import app, db, bcrypt
 from flask1.simple_forms import RegistrationForm, LoginForm
-from flask1.models import Doctor, Patient, Rec001
+from flask1.models import Doctor, Patient, Rec001, load_user
 from flask_login import login_user, current_user, logout_user, login_required
-
-posts = [
-    {
-        'name': 'Mohammed Avdol',
-        'age': 33,
-        'description': 'Yes, I AM!'
-    },
-    {
-        'name': 'Joseph Joestar',
-        'age': 64,
-        'description': 'OH MY GOD'
-    },
-    {
-        'name': 'Giorno Giovana',
-        'age': 15,
-        'description': 'Kono Giorno Giovana ha, Yume ga aru'
-    }
-]
+from flask1.plot_ecg import load_from_file
 
 
-@app.route('/', endpoint='home_page')
+# @app.route('/', endpoint='home_page')
 @app.route('/home', endpoint='home_page')
 def home_page():
-    return render_template('index.html', var_post=posts)
+    if current_user.is_authenticated and current_user is not None:
+        print(current_user)
+        patient_list = Patient.query.filter_by(doctor_id=current_user.id).all()
+    else:
+        print("Not authenticated")
+    return render_template('index.html', acc=current_user, var_patient=patient_list)
+    # trial with dummy variables from posts
 
 
 @app.route('/second', endpoint='second_page')
@@ -54,9 +43,10 @@ def register_page():
     return render_template('register_form.html', title='Register', form=form)
 
 
+@app.route('/', methods=['GET', 'POST'], endpoint='login_page')
 @app.route('/login', methods=['GET', 'POST'], endpoint='login_page')
 def login_page():
-    if current_user.is_authenticated:
+    if current_user is not None and current_user.is_authenticated:
         return redirect(url_for('home_page'))
     form = LoginForm()
     if form.validate_on_submit():
@@ -77,10 +67,37 @@ def login_page():
 def logout_page():
     logout_user()
     flash(f'Logged Out successfully', 'success')
-    return redirect(url_for('home_page'))
+    return redirect(url_for('login_page'))
 
 
 @app.route('/account', endpoint='account_page')
 @login_required
 def account_page():
     return render_template('account.html', title='Account')
+    # image_file = url_for('static', filename = 'images/' + current_user.image_file)
+
+# @app.route('/patient/<int:patient_id>', endpoint='patient_list_page')
+# @login_required
+# def patient_list_page(patient_id):
+
+
+@app.route('/patient/<int:patient_id>', endpoint='patient_page')
+@login_required
+def patient_page(patient_id):
+    patient = Patient.query.get_or_404(patient_id)
+    recording = Rec001.query.filter_by(patient_id=patient.id).all()
+    return render_template('patient.html', title=patient.username, patient=patient, rec_list=recording)
+
+
+@app.route('/ecg/<int:ecg_id>', endpoint='ecg_page')
+@login_required
+def ecg_page(ecg_id):
+    ecg = Rec001.query.get_or_404(ecg_id)
+    file_in = 'flask1/' + ecg.record_file
+    # time to plot ecg
+    sb_x, ch1, ch2, ch3, ppg = load_from_file(file_in)
+    # print("CH1 = ", ch1[0])
+    # print("CH2 = ", ch2[0])
+    # print("CH3 = ", ch3[0])
+    # print("PPG = ", ppg[0])
+    return render_template('view_ecg.html', title=ecg.id, value1=ch1, value2=ch2, value3=ch3, value4=ppg, labels=sb_x)

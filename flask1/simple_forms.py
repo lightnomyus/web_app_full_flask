@@ -3,6 +3,7 @@ from wtforms import StringField, SubmitField, BooleanField
 from wtforms.validators import DataRequired, Email, Length, EqualTo, email_validator, ValidationError
 from flask1.models import Doctor
 
+
 class RegistrationForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired(), Length(min=2, max=20)])
     email = StringField('Email', validators=[DataRequired(), Email()])

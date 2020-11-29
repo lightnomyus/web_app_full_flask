@@ -37,7 +37,7 @@ class Rec001(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     patient_id = db.Column(db.Integer, db.ForeignKey('patient.id'), nullable=False)
     date_uploaded = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)  # or try utcnow()
-    record_file = db.Column(db.String(20), nullable=False, default='Dummy_400sps_10min.csv')
+    record_file = db.Column(db.String(20), nullable=False, default='rawdata/m1.csv')
 
     def __repr__(self):
         return f"Raw file('{self.id}', '{self.patient_id}', '{self.date_uploaded}')"
