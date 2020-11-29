@@ -18,14 +18,9 @@ def home_page():
     # trial with dummy variables from posts
 
 
-@app.route('/second', endpoint='second_page')
-def second_page():
-    return render_template('second.html')
-
-
 @app.route('/about', endpoint='about_page')
 def about_page():
-    return render_template('anu.html', title='Anu')
+    return render_template('anu.html', title='About')
 
 
 @app.route('/register', methods=['GET', 'POST'], endpoint='register_page')

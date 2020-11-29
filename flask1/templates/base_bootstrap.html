@@ -31,20 +31,15 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{{ url_for('account_page') }}">Account Settings</a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('about_page') }}">About</a>
+                    </li>
                 {% else %}
                     <li class="nav-item">
                         <a class="nav-link" href="{{ url_for('login_page') }}">Sign In</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('register_page') }}">Register</a>
-                    </li>
                 {% endif %}
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ url_for('about_page') }}">About</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/second">Help Desk</a>
-                </li>
+
             </ul>
         </div>
     </nav>
