@@ -88,11 +88,8 @@ def patient_page(patient_id):
 @login_required
 def ecg_page(ecg_id):
     ecg = Rec001.query.get_or_404(ecg_id)
+    upload = ecg.date_uploaded
     file_in = 'flask1/' + ecg.record_file
     # time to plot ecg
-    sb_x, ch1, ch2, ch3, ppg = load_from_file(file_in)
-    # print("CH1 = ", ch1[0])
-    # print("CH2 = ", ch2[0])
-    # print("CH3 = ", ch3[0])
-    # print("PPG = ", ppg[0])
-    return render_template('view_ecg.html', title=ecg.id, value1=ch1, value2=ch2, value3=ch3, value4=ppg, labels=sb_x)
+    ch1, ch2, ch3, ppg = load_from_file(file_in)
+    return render_template('view_ecg.html', title=ecg.id, val1=ch1, val2=ch2, val3=ch3, val4=ppg, updated=upload)

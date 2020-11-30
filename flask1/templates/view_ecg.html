@@ -15,21 +15,10 @@
 
 {% block content_customized %}
     <h1>This is View ECG Page</h1>
-    <canvas id="myChart1" width="5000" height="400"></canvas>
-    <p id="caption">Channel 1, Chart size = 5000 * 400 pixels.</p>
+    <p>Uploaded time = {{ updated.strftime('%A, %d-%m-%Y\t %H:%M:%S [UTC time]') }}</p>
     <br>
-
-    <canvas id="myChart2" width="5000" height="400"></canvas>
-    <p id="caption">Channel 2, Chart size = 5000 * 400 pixels.</p>
-    <br>
-
-    <canvas id="myChart3" width="5000" height="400"></canvas>
-    <!-- bar chart canvas element -->
-    <p id="caption">Channel 3, Chart size = 5000 * 400 pixels.</p>
-    <br>
-
-    <canvas id="myChart4" width="5000" height="400"></canvas>
-    <p id="caption">PPG, Chart size = 5000 * 400 pixels.</p>
+    <canvas id="myChart1" width="5000" height="600"></canvas>
+    <p id="caption">Chart size = 5000 * 600 pixels. Scale : 1 box = 0.5mV = 0.2 second.</p>
     <br>
 {% endblock %}
 
@@ -38,178 +27,160 @@
         // Global parameters:
         // do not resize the chart canvas when its container does (keep at 600x400px)
         Chart.defaults.global.responsive = false;
+        Chart.defaults.global.defaultColor = '#000000'; //default color
+        Chart.defaults.global.defaultFontColor = '#000000';
+        Chart.defaults.global.defaultFontFamily = 'Helvetica';
+        Chart.defaults.global.defaultFontSize = 16;
 
         //define char data Channel 1
-        var chartData1 = {
-            labels: [{% for item in labels %}
-                "{{item}}",
-            {% endfor %}],
-            datasets: [{
+        const chartData1 =
+        {
+            datasets:
+            [{
+                data: {{ val1 }},
+                label: 'Channel 1',
                 fill: false,
-                lineTension: 0.1,
-                backgroundColor: "rgba(75,192,192,0.4)",
-                borderColor: "rgba(75,192,192,1)",
-                borderCapStyle: 'butt',
-                borderDash: [],
-                borderDashOffset: 0.0,
-                borderJoinStyle: 'miter',
-                pointBorderColor: "rgba(75,192,192,1)",
-                pointBackgroundColor: "#fff",
-                pointBorderWidth: 1,
+                backgroundColor: '#000000',
+                borderColor: '#000000',
+                //borderCapStyle: 'butt',
+                //borderDash: [],
+                //borderJoinStyle: 'miter',
+                pointBackgroundColor: '#000000',
+                pointBorderWidth: 0.1,
                 pointRadius: 1,
-                pointHitRadius: 10,
-                data: [{% for item in value1 %}
-                    {{item}},
-                {% endfor %}],
-                spanGaps: false,
-                showLines: false
-            }]
-        }
-        // define the chart data Channel 2
-        var chartData2 = {
-            labels: [{% for item in labels %}
-                "{{item}}",
-            {% endfor %}],
-            datasets: [{
+                borderWidth: 2,
+                spanGaps: true,
+                showLines: true
+            },
+            {
+                data: {{ val2 }},
+                label: 'Channel 2',
                 fill: false,
-                lineTension: 0.1,
-                backgroundColor: "rgba(75,192,192,0.4)",
-                borderColor: "rgba(75,192,192,1)",
-                borderCapStyle: 'butt',
-                borderDash: [],
-                borderDashOffset: 0.0,
-                borderJoinStyle: 'miter',
-                pointBorderColor: "rgba(75,192,192,1)",
-                pointBackgroundColor: "#fff",
-                pointBorderWidth: 1,
+                backgroundColor: '#000000',
+                borderColor: '#000000',
+                pointBackgroundColor: '#000000',
+                pointBorderWidth: 0.1,
                 pointRadius: 1,
-                pointHitRadius: 10,
-                data: [{% for item in value2 %}
-                    {{item}},
-                {% endfor %}],
-                spanGaps: false,
-                showLines: false
-            }]
-        }
-
-        // define the chart data Channel 3
-        var chartData3 = {
-            labels: [{% for item in labels %}
-                "{{item}}",
-            {% endfor %}],
-            datasets: [{
+                borderWidth: 2,
+                spanGaps: true,
+                showLines: true
+            },
+            {
+                data: {{ val3 }},
+                label: 'Channel 3',
                 fill: false,
-                lineTension: 0.1,
-                backgroundColor: "rgba(75,192,192,0.4)",
-                borderColor: "rgba(75,192,192,1)",
-                borderCapStyle: 'butt',
-                borderDash: [],
-                borderDashOffset: 0.0,
-                borderJoinStyle: 'miter',
-                pointBorderColor: "rgba(75,192,192,1)",
-                pointBackgroundColor: "#fff",
-                pointBorderWidth: 1,
+                backgroundColor: '#000000',
+                borderColor: '#000000',
+                pointBackgroundColor: '#000000',
+                pointBorderWidth: 0.1,
                 pointRadius: 1,
-                pointHitRadius: 10,
-                data: [{% for item in value3 %}
-                    {{item}},
-                {% endfor %}],
-                spanGaps: false,
-                showLines: false
-            }]
-        }
-
-        // define the chart data PPG
-        var chartData4 = {
-            labels: [{% for item in labels %}
-                "{{item}}",
-            {% endfor %}],
-            datasets: [{
+                borderWidth: 2,
+                spanGaps: true,
+                showLines: true
+            },
+            {
+                data: {{ val4 }},
+                label: 'PPG',
                 fill: false,
-                lineTension: 0.1,
-                backgroundColor: "rgba(75,192,192,0.4)",
-                borderColor: "rgba(75,192,192,1)",
-                borderCapStyle: 'butt',
-                borderDash: [],
-                borderDashOffset: 0.0,
-                borderJoinStyle: 'miter',
-                pointBorderColor: "rgba(75,192,192,1)",
-                pointBackgroundColor: "#fff",
-                pointBorderWidth: 1,
+                backgroundColor: '#000000',
+                borderColor: '#000000',
+                pointBackgroundColor: '#000000',
+                pointBorderWidth: 0.1,
                 pointRadius: 1,
-                pointHitRadius: 10,
-                data: [{% for item in value4 %}
-                    {{item}},
-                {% endfor %}],
-                spanGaps: false,
-                showLines: false
+                borderWidth: 2,
+                spanGaps: true,
+                showLines: true
             }]
         }
 
         // get chart canvas
-        var ctx = document.getElementById("myChart1").getContext("2d");
-        var ctx2 = document.getElementById("myChart2").getContext("2d");
-        var ctx3 = document.getElementById("myChart3").getContext("2d");
-        var ctx4 = document.getElementById("myChart4").getContext("2d");
+        const ctx = document.getElementById("myChart1").getContext("2d");
+
         // create the chart using the chart canvas
-        var myChart1 = new Chart(ctx, {
-            type: 'line',
-            data: chartData1,
-            options: {
-                title: {
-                    display: true,
-                    text: 'Channel 1 Simulation'
-                },
-                legend: {
-                    display: false
-                }
-            }
-        });
+        const myChart1 = new Chart(ctx,
+            {
+                type: 'scatter',
+                data: chartData1,
+                options:
+                {
+                    title:
+                    {
+                        display: true,
+                        text: 'ECG SIMULATION',
+                        fontSize: 32
+                    },
+                    legend:
+                    {
+                        display: false,
+                        position: 'top',
+                        align: 'center'
+                    },
+                    events: ['click'],
+                    onClick: {},
+                    animation:
+                    {
+                        duration: 0
+                    },
+                    hover:
+                    {
+                        animationDuration: 0
+                    },
+                    responsiveAnimationDuration: 0,
+                    scales:
+                    {
+                        xAxes:
+                        [{
+                            display: true,
+                            gridLines: {
+                                display: true,
+                                color: 'rgba(255, 0, 0, 1)',
+                                lineWidth: 1
+                            },
+                            ticks:
+                            {
+                                callback: function(value, index, values)
+                                {
+                                    return '';//delete this callback to view original ticks
+                                },
+                                //beginAtZero:true,
+                                //maxTicksLimit : 5,
+                                min: 0.0,
+                                max: 60.0,
+                                stepSize: 0.2
 
-        //chart 2
-        var myChart2 = new Chart(ctx2, {
-            type: 'line',
-            data: chartData2,
-            options: {
-                title: {
-                    display: true,
-                    text: 'Channel 2 Simulation'
-                },
-                legend: {
-                    display: false
-                }
-            }
-        });
+                            }
+                        }],
 
-        //chart 3
-        var myChart3 = new Chart(ctx3, {
-            type: 'line',
-            data: chartData3,
-            options: {
-                title: {
-                    display: true,
-                    text: 'Channel 3 Simulation'
-                },
-                legend: {
-                    display: false
+                        yAxes:
+                        [{
+                            display: true,
+                            gridLines:
+                            {
+                                display: true,
+                                color: 'rgba(255, 0, 0, 1)',
+                                lineWidth: 1
+                            },
+                            ticks:
+                            {
+                                callback: function(value, index, values)
+                                {
+                                    return '';
+                                },
+                                min: -5.0,
+                                max: 10.0,
+                                stepSize: 0.5
+                            },
+                            scaleLabel:
+                            {
+                                display: true,
+                                labelString: 'PPG    |    CHANNEL 3    |    CHANNEL 2    |    CHANNEL 1'
+                            }
+                        }]
+                    }
                 }
             }
-        });
+        );
 
-        //chart 4
-        var myChart4 = new Chart(ctx4, {
-            type: 'line',
-            data: chartData4,
-            options: {
-                title: {
-                    display: true,
-                    text: 'PPG Simulation'
-                },
-                legend: {
-                    display: false
-                }
-            }
-        });
 
     </script>
 {% endblock %}

@@ -21,7 +21,7 @@
     {% for i in rec_list %}
         <p>Record {{ count }} <a href="{{ url_for('ecg_page', ecg_id=i.id) }}">{{ i.record_file }}</a>
         Status : xxxx
-        Last Updated = {{ i.date_uploaded.strftime('%A, %d-%m-%Y\t %H:%M:%S [UTC time]') }}
+        <!-- Last Updated = {{ i.date_uploaded.strftime('%A, %d-%m-%Y\t %H:%M:%S [UTC time]') }} -->
         </p>
     {% endfor %}
     <br>
