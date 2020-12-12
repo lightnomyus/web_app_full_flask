@@ -11,21 +11,22 @@
 
 
 {% block content_customized %}
-    <h1>Welcome, Dr. {{ acc.username }}</h1>
+    <h1>Welcome, Dr. {{ acc.doctor_name }}</h1>
     <br>
 
     <!-- content with for loop -->
-    <!--
-    {% for i in var_post %}
-        <p>Name = <a href="#">{{ i.name }}</a></p>
-        <p>Age = {{ i.age }}. Quote = {{ i.description }}</p>
-        <br>
-    {% endfor %}
-    -->
-
     <!-- For patient list -->
     {% for i in var_patient %}
-        <p>Name = <a href="{{ url_for('patient_page', patient_id=i.id) }}">{{ i.username }}</a> ;  Status : Recording</p>
+
+        <p>Name = <a href="{{ url_for('patient_page', selected_id=i.patient_id) }}">{{ i.patient_name }}</a>
+
+        {% if i.is_recording==true %}
+            Status : Recording
+        {% else %}
+            Status : Not Recording
+        {% endif %}
+
+        </p>
         <br>
     {% endfor %}
 

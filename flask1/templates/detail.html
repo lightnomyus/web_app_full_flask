@@ -1,0 +1,27 @@
+{% extends 'base_bootstrap.html' %}
+
+
+{% block page_title %}
+    {% if title %}
+        <title>Gab-{{ title }}</title>
+    {% else %}
+        <title>Gab-Home</title>
+    {% endif %}
+{% endblock %}
+
+
+{% block content_customized %}
+    <h1>Patient Details:</h1>
+    <br>
+    Patient Name = {{ p_name }}.
+    <br>
+    Patient ID = {{ p_id }}.
+    <br>
+    Doctor Name = {{ d_name }}
+    <br>
+    {% for i in rec_list %}
+        <p>Record at : <a href="{{ url_for('ecg_page', ecg_id=i.record_id) }}">{{ i.upload_time.strftime('%A, %d-%m-%Y\t %H:%M:%S [WIB]') }}</a>
+        </p>
+    {% endfor %}
+    <br>
+{% endblock %}

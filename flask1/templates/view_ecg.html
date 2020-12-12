@@ -14,12 +14,17 @@
 
 
 {% block content_customized %}
-    <h1>This is View ECG Page</h1>
-    <p>Uploaded time = {{ updated.strftime('%A, %d-%m-%Y\t %H:%M:%S [UTC time]') }}</p>
+    <h1>Patient Details:</h1>
     <br>
+    Patient Name = {{ p_name }}.
+    <br>
+    Patient ID = {{ p_id }}.
+    <br>
+    Doctor Name = {{ d_name }}
+    <br>
+    <p>Uploaded time = {{ updated.strftime('%A, %d-%m-%Y\t %H:%M:%S [UTC time]') }}</p>
     <canvas id="myChart1" width="5000" height="600"></canvas>
     <p id="caption">Chart size = 5000 * 600 pixels. Scale : 1 box = 0.5mV = 0.2 second.</p>
-    <br>
 {% endblock %}
 
 {% block additional_scripts %}

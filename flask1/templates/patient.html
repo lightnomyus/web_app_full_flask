@@ -14,14 +14,20 @@
     <h1>This is Patient Page</h1>
     <h2>Patient Details:</h2>
     <br>
-    Username = {{ patient.username }}.   Patient ID = {{ patient.id }}.
+    Patient Name = {{ patient.patient_name }}.   Patient ID = {{ patient.patient_id }}.
     <br>
-    List or record(s):
+    List or Recording Session(s):
     <br>
-    {% for i in rec_list %}
-        <p>Record {{ count }} <a href="{{ url_for('ecg_page', ecg_id=i.id) }}">{{ i.record_file }}</a>
-        Status : xxxx
-        <!-- Last Updated = {{ i.date_uploaded.strftime('%A, %d-%m-%Y\t %H:%M:%S [UTC time]') }} -->
+    {% for i in summary_rec_list %}
+        <p>Session : <a href="{{ url_for('detail_page', active_patient_id=i.patient_id, active_rec=i.n_rec) }}">Session {{ i.n_rec }}</a>
+
+        {% if i.is_active==true %}
+            |  Status : Recording.
+        {% else %}
+            |  Status : Finished.
+        {% endif %}
+
+        |  Last Update = {{ i.latest_time.strftime('%A, %d-%m-%Y\t %H:%M:%S [WIB]') }}
         </p>
     {% endfor %}
     <br>
