@@ -14,17 +14,36 @@
 
 
 {% block content_customized %}
-    <h1>Patient Details:</h1>
-    <br>
     Patient Name = {{ p_name }}.
     <br>
     Patient ID = {{ p_id }}.
     <br>
     Doctor Name = {{ d_name }}
     <br>
-    <p>Uploaded time = {{ updated.strftime('%A, %d-%m-%Y\t %H:%M:%S [UTC time]') }}</p>
+    Update time = {{ updated.strftime('%A, %d-%m-%Y\t %H:%M:%S [WIB]') }}.
+    <br>
+    Heart Rate = {{ hr }} bpm.
     <canvas id="myChart1" width="5000" height="600"></canvas>
     <p id="caption">Chart size = 5000 * 600 pixels. Scale : 1 box = 0.5mV = 0.2 second.</p>
+    <br>
+    *The start time of this recording equals to 1 minute before the "Update Time" above, because the duration is 1 minute.
+    <br>
+    <div class="btn-group">
+        <a href="{{ url_for('ecg_page', ecg_id=next_min) }}" class="btn btn-primary">Next Min.</a>
+        <a href="{{ url_for('ecg_page', ecg_id=prev_min) }}" class="btn btn-primary">Prev. Min.</a>
+    </div>
+    <br>
+    <br>
+    <div class="btn-group">
+        <a href="{{ url_for('ecg_page', ecg_id=next_hour) }}" class="btn btn-primary">Next Hour</a>
+        <a href="{{ url_for('ecg_page', ecg_id=prev_hour) }}" class="btn btn-primary">Prev. Hour</a>
+    </div>
+    <br>
+    <br>
+    <div class="btn-group">
+        <a href="{{ url_for('ecg_page', ecg_id=next_day) }}" class="btn btn-primary">Next Day</a>
+        <a href="{{ url_for('ecg_page', ecg_id=prev_day) }}" class="btn btn-primary">Prev. Day</a>
+    </div>
 {% endblock %}
 
 {% block additional_scripts %}

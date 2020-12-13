@@ -7,6 +7,7 @@ from flask1.plot_ecg import load_from_file
 from sqlalchemy import and_, desc
 from io import BytesIO
 from azure.storage.blob import BlobServiceClient
+import datetime
 
 
 # @app.route('/', endpoint='home_page')
@@ -78,14 +79,16 @@ def patient_page(selected_id):
 @app.route('/detail/<int:active_patient_id>/<int:active_rec>', endpoint='detail_page')
 @login_required
 def detail_page(active_patient_id, active_rec):
-    rec_session = Rec001.query.filter(and_(Rec001.patient_id == active_patient_id, Rec001.n_rec == active_rec)).order_by(Rec001.record_id.desc())
+    rec_session = Rec001.query.filter(and_(Rec001.patient_id == active_patient_id, Rec001.n_rec == active_rec)).all()
     if "selected_patient_name" in session:
         local_name = session["selected_patient_name"]
     if "selected_patient_id" in session:
         local_id = session["selected_patient_id"]
     if "selected_doctor_name" in session:
         local_doc = session["selected_doctor_name"]
-    return render_template('detail.html', title='detail', rec_list=rec_session, p_name=local_name, p_id=local_id, d_name=local_doc)
+    session["selected_n_rec"] = active_rec
+    return render_template('detail.html', title='detail', rec_list=rec_session, p_name=local_name, p_id=local_id,
+                           d_name=local_doc)
 
 
 @app.route('/ecg/<int:ecg_id>', endpoint='ecg_page')
@@ -98,8 +101,67 @@ def ecg_page(ecg_id):
         local_id = session["selected_patient_id"]
     if "selected_doctor_name" in session:
         local_doc = session["selected_doctor_name"]
+    if "selected_n_rec" in session:
+        local_n_rec = session["selected_n_rec"]
+    rec_session = Rec001.query.filter(and_(Rec001.patient_id == local_id, Rec001.n_rec == local_n_rec)).order_by(Rec001.record_id.desc())
+
     ecg = Rec001.query.get_or_404(ecg_id)
+    id_now = ecg.record_id
+    id_n_m = ecg.record_id
+    id_n_h = ecg.record_id
+    id_n_d = ecg.record_id
+
+    id_p_m = ecg.record_id
+    id_p_h = ecg.record_id
+    id_p_d = ecg.record_id
     upload = ecg.upload_time
+    id_hr = ecg.HR
+
+    # previous minute
+    for i in rec_session:
+        temp_sel = i.upload_time - upload
+        secs = temp_sel.total_seconds()
+        if secs <= -60:
+            id_p_m = i.record_id
+            break
+
+    # previous hour
+    for i in rec_session:
+        temp_sel = i.upload_time - upload
+        secs = temp_sel.total_seconds()
+        if secs <= -3600:
+            id_p_h = i.record_id
+            break
+
+    # previous day
+    for i in rec_session:
+        temp_sel = i.upload_time - upload
+        secs = temp_sel.total_seconds()
+        if secs <= -86400:
+            id_p_d = i.record_id
+            break
+
+    # next minute
+    for i in rec_session:
+        temp_sel = i.upload_time - upload
+        secs = temp_sel.total_seconds()
+        if secs >= 60:
+            id_n_m = i.record_id
+
+    # next hour
+    for i in rec_session:
+        temp_sel = i.upload_time - upload
+        secs = temp_sel.total_seconds()
+        if secs >= 3600:
+            id_n_h = i.record_id
+
+    # next day
+    for i in rec_session:
+        temp_sel = i.upload_time - upload
+        secs = temp_sel.total_seconds()
+        if secs >= 86400:
+            id_n_d = i.record_id
+
     azure_credential = "yrAk6GS3kpefZYdNEDyQtuFep5cBp5OvM2INpvedAe2o6d5ifBhcbGNmT1yGExg9oqCZnu40hQse1RxE4MzAXQ=="
     blob_name = ecg.record_file
     blob_service_client = BlobServiceClient(account_url="https://lightnomyusblob1.blob.core.windows.net",
@@ -112,4 +174,6 @@ def ecg_page(ecg_id):
         b.readinto(f)
     # time to plot ecg
     ch1, ch2, ch3, ppg = load_from_file('flask1/temp1.csv')
-    return render_template('view_ecg.html', title='view-ecg', val1=ch1, val2=ch2, val3=ch3, val4=ppg, p_name=local_name, p_id=local_id, d_name=local_doc, updated=upload)
+    return render_template('view_ecg.html', title='view-ecg', val1=ch1, val2=ch2, val3=ch3, val4=ppg, hr=id_hr,
+                           p_name=local_name, p_id=local_id, d_name=local_doc, updated=upload, next_min=id_n_m,
+                           prev_min=id_p_m, next_hour=id_n_h, prev_hour=id_p_h, next_day=id_n_d, prev_day=id_p_d)
