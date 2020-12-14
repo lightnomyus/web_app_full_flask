@@ -5,10 +5,10 @@ from flask_login import LoginManager
 
 # from flask_bootstrap import Bootstrap
 
-
 app = Flask(__name__, static_url_path='',
             static_folder='static',
             template_folder='templates', )
+
 # bootstrap = Bootstrap(app)
 app.config['SECRET_KEY'] = '65f295c5f593a281ba036c81a4ee5212'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mssql://lightnomyus:L1ghtn0myu5@holterserver1.database.windows.net/holter_database1?driver=SQL Server'

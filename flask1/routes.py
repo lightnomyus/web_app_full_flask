@@ -15,8 +15,6 @@ def home_page():
         # print(current_user)
         session["selected_doctor_name"] = current_user.doctor_name
         patient_list = Patient.query.filter_by(doctor_id=current_user.doctor_id).all()
-    else:
-        print("Not authenticated")
 
     if "selected_patient_name" in session:
         session.pop("selected_patient_name", None)
@@ -41,11 +39,7 @@ def login_page():
         # if user and bcrypt.check_password_hash(user.doctor_pass, form.password.data):
         if user:
             login_user(user, remember=form.remember_pass.data)
-            next_page = request.args.get('next')  # set next page
-            if next_page:
-                return redirect(next_page)
-            else:
-                return redirect(url_for('home_page'))
+            return redirect(url_for('home_page'))
         else:
             flash('Login Unsuccessful. Check username and password!', 'danger')
     return render_template('login_form.html', title='Login', form=form)
