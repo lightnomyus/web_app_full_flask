@@ -1,13 +1,11 @@
 from flask import render_template, flash, redirect, url_for, request, session
 from flask1 import app, db, bcrypt
 from flask1.simple_forms import LoginForm
-from flask1.models import Doctor, Patient, Rec001, SummaryRec, load_user
+from flask1.models import Doctor, Patient, Rec001, SummaryRec
 from flask_login import login_user, current_user, logout_user, login_required
 from flask1.plot_ecg import load_from_file
 from sqlalchemy import and_, desc
-from io import BytesIO
 from azure.storage.blob import BlobServiceClient
-import datetime
 
 
 # @app.route('/', endpoint='home_page')
@@ -25,7 +23,6 @@ def home_page():
     if "selected_patient_id" in session:
         session.pop("selected_patient_id", None)
     return render_template('index.html', acc=current_user, var_patient=patient_list)
-    # trial with dummy variables from posts
 
 
 @app.route('/about', endpoint='about_page')
@@ -58,12 +55,6 @@ def logout_page():
     logout_user()
     flash(f'Logged Out successfully', 'success')
     return redirect(url_for('login_page'))
-
-
-@app.route('/account', endpoint='account_page')
-@login_required
-def account_page():
-    return render_template('account.html', title='Account')
 
 
 @app.route('/patient/<int:selected_id>', endpoint='patient_page')
