@@ -23,7 +23,9 @@
     Update time = {{ updated.strftime('%A, %d-%m-%Y\t %H:%M:%S [WIB]') }}.
     <br>
     Heart Rate = {{ hr }} bpm.
-    <canvas id="myChart1" width="5000" height="600"></canvas>
+    <br>
+    ECG Graph:
+    <canvas id="myChart1" width="5000" height="600" style="background-color: #FFFFFF" ></canvas>
     <p id="caption">Scale : 1 box = 0.5mV = 0.2 second. The start time of this recording equals to 1 minute before the "Update Time" above, because the duration is 1 minute.</p>
     <div class="btn-group">
         <a href="{{ url_for('ecg_page', ecg_id=prev_min) }}" class="btn btn-primary">Prev Minute</a>
@@ -48,7 +50,7 @@
         // Global parameters:
         // do not resize the chart canvas when its container does (keep at 600x400px)
         Chart.defaults.global.responsive = false;
-        Chart.defaults.global.defaultColor = '#000000'; //default color
+        Chart.defaults.global.defaultColor = '#FFFFFF'; //default color
         Chart.defaults.global.defaultFontColor = '#000000';
         Chart.defaults.global.defaultFontFamily = 'Helvetica';
         Chart.defaults.global.defaultFontSize = 16;
@@ -61,7 +63,7 @@
                 data: {{ val1 }},
                 label: 'Channel 1',
                 fill: false,
-                backgroundColor: '#000000',
+                backgroundColor: '#FFFFFF',
                 borderColor: '#000000',
                 //borderCapStyle: 'butt',
                 //borderDash: [],
@@ -77,7 +79,7 @@
                 data: {{ val2 }},
                 label: 'Channel 2',
                 fill: false,
-                backgroundColor: '#000000',
+                backgroundColor: '#FFFFFF',
                 borderColor: '#000000',
                 pointBackgroundColor: '#000000',
                 pointBorderWidth: 0.1,
@@ -90,7 +92,7 @@
                 data: {{ val3 }},
                 label: 'Channel 3',
                 fill: false,
-                backgroundColor: '#000000',
+                backgroundColor: '#FFFFFF',
                 borderColor: '#000000',
                 pointBackgroundColor: '#000000',
                 pointBorderWidth: 0.1,
@@ -103,7 +105,7 @@
                 data: {{ val4 }},
                 label: 'PPG',
                 fill: false,
-                backgroundColor: '#000000',
+                backgroundColor: '#FFFFFF',
                 borderColor: '#000000',
                 pointBackgroundColor: '#000000',
                 pointBorderWidth: 0.1,
@@ -115,7 +117,13 @@
         }
 
         // get chart canvas
-        const ctx = document.getElementById("myChart1").getContext("2d");
+        const ctx = document.getElementById("myChart1").getContext('2d');
+        //const context = ctx.getContext('2d');
+        //context.save();
+        //context.globalCompositeOperation = 'destination-over';
+        //context.fillStyle = "#FFFFFF";
+        //context.fillRect(0, 0, ctx.width, ctx.height);
+        //context.restore();
 
         // create the chart using the chart canvas
         const myChart1 = new Chart(ctx,
@@ -126,7 +134,7 @@
                 {
                     title:
                     {
-                        display: true,
+                        display: false,
                         text: 'ECG SIMULATION',
                         fontSize: 32
                     },

@@ -16,7 +16,7 @@
     <br>
     Patient Name = {{ patient.patient_name }}.   Patient ID = {{ patient.patient_id }}.
     <br>
-    List or Recording Session(s):
+    List of     Session(s):
     <br>
     {% for i in summary_rec_list %}
         <p>Session : <a href="{{ url_for('detail_page', active_patient_id=i.patient_id, active_rec=i.n_rec) }}">Session {{ i.n_rec }}</a>
