@@ -24,25 +24,22 @@
     <br>
     Heart Rate = {{ hr }} bpm.
     <canvas id="myChart1" width="5000" height="600"></canvas>
-    <p id="caption">Chart size = 5000 * 600 pixels. Scale : 1 box = 0.5mV = 0.2 second.</p>
-    <br>
-    *The start time of this recording equals to 1 minute before the "Update Time" above, because the duration is 1 minute.
-    <br>
+    <p id="caption">Scale : 1 box = 0.5mV = 0.2 second. The start time of this recording equals to 1 minute before the "Update Time" above, because the duration is 1 minute.</p>
     <div class="btn-group">
-        <a href="{{ url_for('ecg_page', ecg_id=next_min) }}" class="btn btn-primary">Next Min.</a>
-        <a href="{{ url_for('ecg_page', ecg_id=prev_min) }}" class="btn btn-primary">Prev. Min.</a>
+        <a href="{{ url_for('ecg_page', ecg_id=prev_min) }}" class="btn btn-primary">Prev Minute</a>
+        <a href="{{ url_for('ecg_page', ecg_id=next_min) }}" class="btn btn-primary">Next Minute</a>
     </div>
     <br>
     <br>
     <div class="btn-group">
+        <a href="{{ url_for('ecg_page', ecg_id=prev_hour) }}" class="btn btn-primary">Prev Hour</a>
         <a href="{{ url_for('ecg_page', ecg_id=next_hour) }}" class="btn btn-primary">Next Hour</a>
-        <a href="{{ url_for('ecg_page', ecg_id=prev_hour) }}" class="btn btn-primary">Prev. Hour</a>
     </div>
     <br>
     <br>
     <div class="btn-group">
+        <a href="{{ url_for('ecg_page', ecg_id=prev_day) }}" class="btn btn-primary">Prev Day</a>
         <a href="{{ url_for('ecg_page', ecg_id=next_day) }}" class="btn btn-primary">Next Day</a>
-        <a href="{{ url_for('ecg_page', ecg_id=prev_day) }}" class="btn btn-primary">Prev. Day</a>
     </div>
 {% endblock %}
 
@@ -56,7 +53,7 @@
         Chart.defaults.global.defaultFontFamily = 'Helvetica';
         Chart.defaults.global.defaultFontSize = 16;
 
-        //define char data Channel 1
+        //define chart data
         const chartData1 =
         {
             datasets:

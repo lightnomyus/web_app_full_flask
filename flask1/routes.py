@@ -80,6 +80,17 @@ def patient_page(selected_id):
 @login_required
 def detail_page(active_patient_id, active_rec):
     rec_session = Rec001.query.filter(and_(Rec001.patient_id == active_patient_id, Rec001.n_rec == active_rec)).all()
+
+    # parsing data fro HR summary
+    plot_legend = 'HR'
+    plot1 = []
+    times = []
+    for i in rec_session:
+        # data1 = int(i.HR)
+        # t1 = i.upload_time
+        plot1.append(int(i.HR))
+        times.append(i.upload_time)
+
     if "selected_patient_name" in session:
         local_name = session["selected_patient_name"]
     if "selected_patient_id" in session:
@@ -88,7 +99,7 @@ def detail_page(active_patient_id, active_rec):
         local_doc = session["selected_doctor_name"]
     session["selected_n_rec"] = active_rec
     return render_template('detail.html', title='detail', rec_list=rec_session, p_name=local_name, p_id=local_id,
-                           d_name=local_doc)
+                           d_name=local_doc, values=plot1, labels=times, legend=plot_legend)
 
 
 @app.route('/ecg/<int:ecg_id>', endpoint='ecg_page')
@@ -121,7 +132,7 @@ def ecg_page(ecg_id):
     for i in rec_session:
         temp_sel = i.upload_time - upload
         secs = temp_sel.total_seconds()
-        if secs <= -60:
+        if -60 >= secs > -120:
             id_p_m = i.record_id
             break
 
@@ -129,7 +140,7 @@ def ecg_page(ecg_id):
     for i in rec_session:
         temp_sel = i.upload_time - upload
         secs = temp_sel.total_seconds()
-        if secs <= -3600:
+        if -3600 >= secs > -3660:
             id_p_h = i.record_id
             break
 
@@ -137,7 +148,7 @@ def ecg_page(ecg_id):
     for i in rec_session:
         temp_sel = i.upload_time - upload
         secs = temp_sel.total_seconds()
-        if secs <= -86400:
+        if -86400 >= secs > -86460:
             id_p_d = i.record_id
             break
 

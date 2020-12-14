@@ -2,6 +2,10 @@
 
 
 {% block page_title %}
+    <!-- Script for Chart.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/moment.js/2.13.0/moment.min.js"></script>
+
     {% if title %}
         <title>Gab-{{ title }}</title>
     {% else %}
@@ -11,17 +15,118 @@
 
 
 {% block content_customized %}
-    <h1>Patient Details:</h1>
-    <br>
     Patient Name = {{ p_name }}.
     <br>
     Patient ID = {{ p_id }}.
     <br>
     Doctor Name = {{ d_name }}
-    <br>
+    <canvas id="myChart" width="1000" height="300"></canvas>
+    <p id="caption">Preview of patient's HR during this session</p>
     {% for i in rec_list %}
-        <p>Record at : <a href="{{ url_for('ecg_page', ecg_id=i.record_id) }}">{{ i.upload_time.strftime('%A, %d-%m-%Y\t %H:%M:%S [WIB]') }}</a>
+        <p>Record uploaded at : <a href="{{ url_for('ecg_page', ecg_id=i.record_id) }}">{{ i.upload_time.strftime('%A, %d-%m-%Y\t %H:%M:%S [WIB]') }}</a>. Heart Rate = {{ i.HR }} bpm.
         </p>
     {% endfor %}
     <br>
+{% endblock %}
+
+
+{% block additional_scripts %}
+    <script>
+        // Global parameters:
+        // do not resize the chart canvas when its container does (keep at 600x400px)
+        Chart.defaults.global.responsive = false;
+        Chart.defaults.global.defaultFontColor = '#000000';
+        Chart.defaults.global.defaultFontFamily = 'Helvetica';
+        Chart.defaults.global.defaultFontSize = 16;
+        const timeFormat = 'MMM DD kk:mm';
+
+        function newDateString(months, days, hours, minutes, seconds)
+        {
+            return moment().month(months).date(days).hour(hours).minute(minutes).second(seconds).format(timeFormat);
+        }
+
+        // Define char data
+        const chartData =
+        {
+            labels :
+                [{% for item in labels %}
+                    newDateString( {{item.month - 1}}, {{item.day}}, {{item.hour}}, {{item.minute}}, {{item.second}} ),
+                {% endfor %}],
+            datasets :
+                [{
+                    label: '{{ legend }}',
+                    fill: true,
+                    lineTension: 0.1,
+                    backgroundColor: "#E1F5FE",
+                    borderColor: "#00FFFF",
+                    borderCapStyle: 'butt',
+                    borderDash: [],
+                    borderDashOffset: 0.0,
+                    borderJoinStyle: 'miter',
+                    pointBorderColor: "#00FFFF",
+                    pointBackgroundColor: "#00FFFF",
+                    pointBorderWidth: 1,
+                    pointHoverRadius: 5,
+                    pointHoverBackgroundColor: "#00FFFF",
+                    pointHoverBorderColor: "#00FFFF",
+                    pointHoverBorderWidth: 2,
+                    pointRadius: 1,
+                    pointHitRadius: 10,
+                    data :
+                        [{% for item in values %}
+                            {{item}},
+                        {% endfor %}],
+                    spanGaps: false
+                }]
+        }
+
+        //
+        const ctx = document.getElementById("myChart").getContext("2d");
+
+        // get chart canvas
+      const myChart = new Chart(ctx,
+      {
+        type: 'line',
+        data: chartData,
+        options:
+        {
+            title:
+            {
+                display: true,
+                text: 'Summary of HR',
+                fontSize: 24
+            },
+            legend:
+            {
+                display: false
+            },
+            scales:
+            {
+                xAxes:
+                [{
+                    display: false
+                }],
+                yAxes:
+                [{
+                    display:true,
+                    gridLines:
+                    {
+                      display: false
+                    },
+                    scaleLabel:
+                    {
+                      display: true,
+                      labelString: 'Heart Rate [bpm]'
+                    },
+                    ticks:
+                    {
+                        min: 0,
+                        stepSize: 20
+                    }
+                }]
+            }
+        }
+      });
+
+    </script>
 {% endblock %}
