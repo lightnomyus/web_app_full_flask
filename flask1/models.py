@@ -8,7 +8,7 @@ def load_user(user_id):
 
 
 class Doctor(db.Model, UserMixin):
-    __tablename__ = 'Doctor'
+    __tablename__ = 'doctor'
     doctor_id = db.Column('doctor_id', db.Integer, primary_key=True)
     doctor_name = db.Column('doctor_name', db.String(100))
     email = db.Column('email', db.String(100))
@@ -24,7 +24,7 @@ class Doctor(db.Model, UserMixin):
 
 
 class Patient(db.Model):
-    __tablename__ = 'Patient'
+    __tablename__ = 'patient'
     patient_id = db.Column('patient_id', db.Integer, primary_key=True)
     patient_name = db.Column('patient_name', db.String(100))
     doctor_id = db.Column('doctor_id', db.Integer)
@@ -39,7 +39,7 @@ class Patient(db.Model):
 
 
 class SummaryRec(db.Model):
-    __tablename__ = 'SummaryRec'
+    __tablename__ = 'summaryrec'
     id = db.Column('id', db.Integer, primary_key=True)
     patient_id = db.Column('patient_id', db.Integer)
     n_rec = db.Column('n_rec', db.Integer)
@@ -48,12 +48,12 @@ class SummaryRec(db.Model):
 
 
 class Rec001(db.Model):
-    __tablename__ = 'Rec001'
+    __tablename__ = 'rec001'
     record_id = db.Column('record_id', db.Integer, primary_key=True)
     patient_id = db.Column('patient_id', db.Integer)
     upload_time = db.Column('upload_time', db.DateTime)
     record_file = db.Column('record_file', db.String(100))
-    HR = db.Column('HR', db.Integer)
+    HR = db.Column('hr', db.Integer)
     n_rec = db.Column('n_rec', db.Integer)
 
     def __repr__(self):
