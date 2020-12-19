@@ -20,7 +20,7 @@
     <br>
     Doctor Name = {{ d_name }}
     <br>
-    Update time = {{ updated.strftime('%A, %d-%m-%Y\t %H:%M:%S [WIB]') }}.
+    Record Time: {{ st.strftime('%A, %d-%m-%Y\t %H:%M:%S') }} - {{ updated.strftime('%H:%M:%S [WIB]') }}.
     <br>
     Heart Rate = {{ hr }} bpm.
     <br>
@@ -28,20 +28,20 @@
     <canvas id="myChart1" width="5000" height="600" style="background-color: #FFFFFF" ></canvas>
     <p id="caption">Scale : 1 box = 0.5mV = 0.2 second. The start time of this recording equals to 1 minute before the "Update Time" above, because the duration is 1 minute.</p>
     <div class="btn-group">
-        <a href="{{ url_for('ecg_page', ecg_id=prev_min) }}" class="btn btn-primary">Prev Minute</a>
-        <a href="{{ url_for('ecg_page', ecg_id=next_min) }}" class="btn btn-primary">Next Minute</a>
+        <a href="{{ url_for('ecg_page', code_option=cpm, ecg_id=prev_min) }}" class="btn btn-primary">Prev Minute</a>
+        <a href="{{ url_for('ecg_page', code_option=cnm, ecg_id=next_min) }}" class="btn btn-primary">Next Minute</a>
     </div>
     <br>
     <br>
     <div class="btn-group">
-        <a href="{{ url_for('ecg_page', ecg_id=prev_hour) }}" class="btn btn-primary">Prev Hour</a>
-        <a href="{{ url_for('ecg_page', ecg_id=next_hour) }}" class="btn btn-primary">Next Hour</a>
+        <a href="{{ url_for('ecg_page', code_option=cph, ecg_id=prev_hour) }}" class="btn btn-primary">Prev Hour</a>
+        <a href="{{ url_for('ecg_page', code_option=cnh, ecg_id=next_hour) }}" class="btn btn-primary">Next Hour</a>
     </div>
     <br>
     <br>
     <div class="btn-group">
-        <a href="{{ url_for('ecg_page', ecg_id=prev_day) }}" class="btn btn-primary">Prev Day</a>
-        <a href="{{ url_for('ecg_page', ecg_id=next_day) }}" class="btn btn-primary">Next Day</a>
+        <a href="{{ url_for('ecg_page', code_option=cpd, ecg_id=prev_day) }}" class="btn btn-primary">Prev Day</a>
+        <a href="{{ url_for('ecg_page', code_option=cnd, ecg_id=next_day) }}" class="btn btn-primary">Next Day</a>
     </div>
 {% endblock %}
 

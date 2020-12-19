@@ -1,5 +1,6 @@
 from flask import render_template, flash, redirect, url_for, request, session
 from flask1 import app, db
+from datetime import datetime, timedelta
 from flask1.simple_forms import LoginForm
 from flask1.models import Doctor, Patient, Rec001, SummaryRec
 from flask_login import login_user, current_user, logout_user, login_required
@@ -71,11 +72,13 @@ def detail_page(active_patient_id, active_rec):
     plot_legend = 'HR'
     plot1 = []
     times = []
+    list_id = []
     for i in rec_session:
         # data1 = int(i.HR)
         # t1 = i.upload_time
         plot1.append(int(i.HR))
         times.append(i.upload_time)
+        list_id.append(i.record_id)
 
     if "selected_patient_name" in session:
         local_name = session["selected_patient_name"]
@@ -84,34 +87,49 @@ def detail_page(active_patient_id, active_rec):
     if "selected_doctor_name" in session:
         local_doc = session["selected_doctor_name"]
     session["selected_n_rec"] = active_rec
+    session["list_of_rec"] = list_id
     return render_template('detail.html', title='detail', rec_list=rec_session, p_name=local_name, p_id=local_id,
-                           d_name=local_doc, values=plot1, labels=times, legend=plot_legend)
+                           d_name=local_doc, values=plot1, labels=times, legend=plot_legend, rec_id=list_id)
 
 
-@app.route('/ecg/<int:ecg_id>', endpoint='ecg_page')
+@app.route('/ecg/<int:code_option>/<int:ecg_id>', endpoint='ecg_page')
 @login_required
-def ecg_page(ecg_id):
+def ecg_page(code_option, ecg_id):
     # session
     if "selected_patient_name" in session:
-        local_name = session["selected_patient_name"]
+        loc_name = session["selected_patient_name"]
     if "selected_patient_id" in session:
-        local_id = session["selected_patient_id"]
+        loc_id = session["selected_patient_id"]
     if "selected_doctor_name" in session:
-        local_doc = session["selected_doctor_name"]
+        loc_doc = session["selected_doctor_name"]
     if "selected_n_rec" in session:
-        local_n_rec = session["selected_n_rec"]
-    rec_session = Rec001.query.filter(and_(Rec001.patient_id == local_id, Rec001.n_rec == local_n_rec)).order_by(Rec001.record_id.desc())
+        loc_n_rec = session["selected_n_rec"]
+    if code_option == 0:
+        if "list_of_rec" in session:
+            local_list_rec = session["list_of_rec"]
+            ecg_id = local_list_rec[ecg_id]
+
+    rec_session = Rec001.query.filter(and_(Rec001.patient_id == loc_id, Rec001.n_rec == loc_n_rec)).order_by(
+        Rec001.record_id.desc())
 
     ecg = Rec001.query.get_or_404(ecg_id)
     id_now = ecg.record_id
     id_n_m = ecg.record_id
     id_n_h = ecg.record_id
     id_n_d = ecg.record_id
+    code_n_m = 1
+    code_n_h = 1
+    code_n_d = 1
 
     id_p_m = ecg.record_id
     id_p_h = ecg.record_id
     id_p_d = ecg.record_id
+    code_p_m = 1
+    code_p_h = 1
+    code_p_d = 1
+
     upload = ecg.upload_time
+    start_time = upload - timedelta(minutes=1)
     id_hr = ecg.HR
 
     # previous minute
@@ -121,6 +139,8 @@ def ecg_page(ecg_id):
         if -60 >= secs > -120:
             id_p_m = i.record_id
             break
+    if id_p_m == id_now:
+        code_p_m = 2
 
     # previous hour
     for i in rec_session:
@@ -129,6 +149,8 @@ def ecg_page(ecg_id):
         if -3600 >= secs > -3660:
             id_p_h = i.record_id
             break
+    if id_p_h == id_now:
+        code_p_h = 2
 
     # previous day
     for i in rec_session:
@@ -137,40 +159,56 @@ def ecg_page(ecg_id):
         if -86400 >= secs > -86460:
             id_p_d = i.record_id
             break
+    if id_p_d == id_now:
+        code_p_d = 2
 
     # next minute
     for i in rec_session:
         temp_sel = i.upload_time - upload
         secs = temp_sel.total_seconds()
-        if secs >= 60:
+        if 60 <= secs < 120:
             id_n_m = i.record_id
+    if id_n_m == id_now:
+        code_n_m = 2
 
     # next hour
     for i in rec_session:
         temp_sel = i.upload_time - upload
         secs = temp_sel.total_seconds()
-        if secs >= 3600:
+        if 3600 <= secs < 3720:
             id_n_h = i.record_id
+    if id_n_h == id_now:
+        code_n_h = 2
 
     # next day
     for i in rec_session:
         temp_sel = i.upload_time - upload
         secs = temp_sel.total_seconds()
-        if secs >= 86400:
+        if 86400 <= secs < 86520:
             id_n_d = i.record_id
+    if id_n_d == id_now:
+        code_n_d = 2
 
-    azure_credential = "yrAk6GS3kpefZYdNEDyQtuFep5cBp5OvM2INpvedAe2o6d5ifBhcbGNmT1yGExg9oqCZnu40hQse1RxE4MzAXQ=="
-    blob_name = ecg.record_file
-    blob_service_client = BlobServiceClient(account_url="https://lightnomyusblob1.blob.core.windows.net",
-                                            credential=azure_credential)
-    blob_client = blob_service_client.get_blob_client(container='lightcontainer1', blob=blob_name)
+    if code_option == 2:
+        ch1 = 0
+        ch2 = 0
+        ch3 = 0
+        ppg = 0
+    else:
+        azure_credential = "yrAk6GS3kpefZYdNEDyQtuFep5cBp5OvM2INpvedAe2o6d5ifBhcbGNmT1yGExg9oqCZnu40hQse1RxE4MzAXQ=="
+        blob_name = ecg.record_file
+        blob_service_client = BlobServiceClient(account_url="https://lightnomyusblob1.blob.core.windows.net",
+                                                credential=azure_credential)
+        blob_client = blob_service_client.get_blob_client(container='lightcontainer1', blob=blob_name)
 
-    # method1
-    with open('flask1/temp1.csv', 'wb') as f:
-        b = blob_client.download_blob()
-        b.readinto(f)
-    # time to plot ecg
-    ch1, ch2, ch3, ppg = load_from_file('flask1/temp1.csv')
+        # method1
+        with open('flask1/temp1.csv', 'wb') as f:
+            b = blob_client.download_blob()
+            b.readinto(f)
+        # time to plot ecg
+        ch1, ch2, ch3, ppg = load_from_file('flask1/temp1.csv')
+
     return render_template('view_ecg.html', title='view-ecg', val1=ch1, val2=ch2, val3=ch3, val4=ppg, hr=id_hr,
-                           p_name=local_name, p_id=local_id, d_name=local_doc, updated=upload, next_min=id_n_m,
-                           prev_min=id_p_m, next_hour=id_n_h, prev_hour=id_p_h, next_day=id_n_d, prev_day=id_p_d)
+                           p_name=loc_name, p_id=loc_id, d_name=loc_doc, updated=upload, next_min=id_n_m, st=start_time,
+                           prev_min=id_p_m, next_hour=id_n_h, prev_hour=id_p_h, next_day=id_n_d, prev_day=id_p_d,
+                           cnm=code_n_m, cnh=code_n_h, cnd=code_n_d, cpm=code_p_m, cph=code_p_h, cpd=code_p_d)

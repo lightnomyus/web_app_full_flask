@@ -20,12 +20,10 @@
     Patient ID = {{ p_id }}.
     <br>
     Doctor Name = {{ d_name }}
+    <br>
+    Heart Rate Preview:
     <canvas id="myChart" width="1000" height="300"></canvas>
-    <p id="caption">Preview of patient's HR during this session</p>
-    {% for i in rec_list %}
-        <p>Record uploaded at : <a href="{{ url_for('ecg_page', ecg_id=i.record_id) }}">{{ i.upload_time.strftime('%A, %d-%m-%Y\t %H:%M:%S [WIB]') }}</a>. Heart Rate = {{ i.HR }} bpm.
-        </p>
-    {% endfor %}
+    <!-- <p id="caption">Preview of patient's HR during this session</p> -->
     <br>
 {% endblock %}
 
@@ -45,7 +43,7 @@
             return moment().month(months).date(days).hour(hours).minute(minutes).second(seconds).format(timeFormat);
         }
 
-        // Define char data
+        // Define chart data
         const chartData =
         {
             labels :
@@ -80,53 +78,89 @@
                 }]
         }
 
-        //
+        // Get chart canvas
+        const holder = document.getElementById("myChart");
         const ctx = document.getElementById("myChart").getContext("2d");
 
-        // get chart canvas
-      const myChart = new Chart(ctx,
-      {
-        type: 'line',
-        data: chartData,
-        options:
+        // Create a callback function
+        const original = Chart.defaults.global.legend.onClick;
+        Chart.defaults.global.legend.onClick = function(e, legendItem)
         {
-            title:
+            update_caption(legendItem);
+            original.call(this, e, legendItem);
+        };
+
+        // Create chart with canvas
+        const myChart = new Chart(ctx,
+        {
+            type: 'line',
+            data: chartData,
+            options:
             {
-                display: true,
-                text: 'Summary of HR',
-                fontSize: 24
-            },
-            legend:
-            {
-                display: false
-            },
-            scales:
-            {
-                xAxes:
-                [{
+                title:
+                {
+                    display: false,
+                    text: 'Summary of HR',
+                    fontSize: 24
+                },
+                legend:
+                {
                     display: false
-                }],
-                yAxes:
-                [{
-                    display:true,
-                    gridLines:
+                },
+                scales:
+                {
+                    xAxes:
+                    [{
+                        display: false
+                    }],
+                    yAxes:
+                    [{
+                        display:true,
+                        gridLines:
+                        {
+                          display: false
+                        },
+                        scaleLabel:
+                        {
+                          display: true,
+                          labelString: 'Heart Rate [bpm]'
+                        },
+                        ticks:
+                        {
+                            min: 0,
+                            stepSize: 20
+                        }
+                    }]
+                },
+                tooltips:
+                {
+                    enabled: true,
+                    mode: 'single',
+                    callbacks:
                     {
-                      display: false
-                    },
-                    scaleLabel:
-                    {
-                      display: true,
-                      labelString: 'Heart Rate [bpm]'
-                    },
-                    ticks:
-                    {
-                        min: 0,
-                        stepSize: 20
+                        label: function (tooltipItems, data)
+                        {
+                            return tooltipItems.yLabel + ' degrees';
+                        }
                     }
-                }]
+                }
             }
-        }
-      });
+        });
+
+        //get text element below chart
+        const pointSelected = document.getElementById("pointSelected");
+
+        // create a callback function
+        holder.onclick = function(evt)
+        {
+            const activePoint = myChart.getElementAtEvent(evt);
+            console.log(activePoint);
+            const coordinate = activePoint[0]["_index"];
+            const url_future = "http://127.0.0.1:5000/ecg/0/" + coordinate;
+            //pointSelected.innerHTML = 'Index: ' + coordinate + " Record ID = " + url_future;
+            //location.href = url_future;
+            window.open(url_future)
+        };
 
     </script>
 {% endblock %}
