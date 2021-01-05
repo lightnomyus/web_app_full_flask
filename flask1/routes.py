@@ -1,5 +1,5 @@
 from flask import render_template, flash, redirect, url_for, request, session
-from flask1 import app, db
+from flask1 import app, db, bcrypt
 from datetime import datetime, timedelta
 from flask1.simple_forms import LoginForm
 from flask1.models import Doctor, Patient, Rec001, SummaryRec
@@ -37,8 +37,8 @@ def login_page():
     form = LoginForm()
     if form.validate_on_submit():
         user = Doctor.query.filter_by(doctor_usr=form.username.data).first()
-        # if user and bcrypt.check_password_hash(user.doctor_pass, form.password.data):
-        if user:
+        if user and bcrypt.check_password_hash(user.doctor_pass, form.password.data):
+        # if user:
             login_user(user, remember=form.remember_pass.data)
             return redirect(url_for('home_page'))
         else:
@@ -58,6 +58,8 @@ def logout_page():
 def patient_page(selected_id):
     patient = Patient.query.get_or_404(selected_id)
     recording = SummaryRec.query.filter_by(patient_id=selected_id).order_by(SummaryRec.id.desc())
+    # result = recording[0]
+    # print(f"Patient ID = {result.patient_id}. n_rec = {result.n_rec}. Active? = {result.is_active}.")
     session["selected_patient_name"] = patient.patient_name
     session["selected_patient_id"] = patient.patient_id
     return render_template('patient.html', title='patient', patient=patient, summary_rec_list=recording)
