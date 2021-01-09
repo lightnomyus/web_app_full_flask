@@ -79,7 +79,7 @@ def detail_page(active_patient_id, active_rec):
         # data1 = int(i.HR)
         # t1 = i.upload_time
         plot1.append(int(i.HR))
-        times.append(i.upload_time)
+        times.append(i.upload_time + timedelta(hours=7))  # adjust time zone to GMT+7
         list_id.append(i.record_id)
 
     if "selected_patient_name" in session:
@@ -130,7 +130,7 @@ def ecg_page(code_option, ecg_id):
     code_p_h = 1
     code_p_d = 1
 
-    upload = ecg.upload_time
+    upload = ecg.upload_time + timedelta(hours=7)  # adjust time zone to GMT + 7
     start_time = upload - timedelta(minutes=1)
     id_hr = ecg.HR
 
