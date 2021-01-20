@@ -58,6 +58,8 @@ def logout_page():
 def patient_page(selected_id):
     patient = Patient.query.get_or_404(selected_id)
     recording = SummaryRec.query.filter_by(patient_id=selected_id).order_by(SummaryRec.id.desc())
+    for i in recording:
+        i.latest_time = i.latest_time + timedelta(hours=7)
     # result = recording[0]
     # print(f"Patient ID = {result.patient_id}. n_rec = {result.n_rec}. Active? = {result.is_active}.")
     session["selected_patient_name"] = patient.patient_name
