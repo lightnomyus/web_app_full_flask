@@ -136,7 +136,7 @@ def ecg_page(code_option, ecg_id):
 
     # previous minute
     for i in rec_session:
-        temp_sel = i.upload_time - upload
+        temp_sel = i.upload_time - ecg.upload_time
         secs = temp_sel.total_seconds()
         if -60 >= secs > -120:
             id_p_m = i.record_id
@@ -146,7 +146,7 @@ def ecg_page(code_option, ecg_id):
 
     # previous hour
     for i in rec_session:
-        temp_sel = i.upload_time - upload
+        temp_sel = i.upload_time - ecg.upload_time
         secs = temp_sel.total_seconds()
         if -3600 >= secs > -3660:
             id_p_h = i.record_id
@@ -156,7 +156,7 @@ def ecg_page(code_option, ecg_id):
 
     # previous day
     for i in rec_session:
-        temp_sel = i.upload_time - upload
+        temp_sel = i.upload_time - ecg.upload_time
         secs = temp_sel.total_seconds()
         if -86400 >= secs > -86460:
             id_p_d = i.record_id
@@ -166,7 +166,7 @@ def ecg_page(code_option, ecg_id):
 
     # next minute
     for i in rec_session:
-        temp_sel = i.upload_time - upload
+        temp_sel = i.upload_time - ecg.upload_time
         secs = temp_sel.total_seconds()
         if 60 <= secs < 120:
             id_n_m = i.record_id
@@ -175,7 +175,7 @@ def ecg_page(code_option, ecg_id):
 
     # next hour
     for i in rec_session:
-        temp_sel = i.upload_time - upload
+        temp_sel = i.upload_time - ecg.upload_time
         secs = temp_sel.total_seconds()
         if 3600 <= secs < 3720:
             id_n_h = i.record_id
@@ -184,7 +184,7 @@ def ecg_page(code_option, ecg_id):
 
     # next day
     for i in rec_session:
-        temp_sel = i.upload_time - upload
+        temp_sel = i.upload_time - ecg.upload_time
         secs = temp_sel.total_seconds()
         if 86400 <= secs < 86520:
             id_n_d = i.record_id
@@ -209,8 +209,10 @@ def ecg_page(code_option, ecg_id):
             b.readinto(f)
         # time to plot ecg
         ch1, ch2, ch3, ppg = load_from_file('flask1/temp1.csv')
+    # debug
+    print(f"current record_id = {id_now}")
 
-    return render_template('view_ecg.html', title='view-ecg', val1=ch1, val2=ch2, val3=ch3, val4=ppg, hr=id_hr,
+    return render_template('view_ecg_ppg.html', title='view-ecg', val1=ch1, val2=ch2, val3=ch3, val4=ppg, hr=id_hr,
                            p_name=loc_name, p_id=loc_id, d_name=loc_doc, updated=upload, next_min=id_n_m, st=start_time,
                            prev_min=id_p_m, next_hour=id_n_h, prev_hour=id_p_h, next_day=id_n_d, prev_day=id_p_d,
                            cnm=code_n_m, cnh=code_n_h, cnd=code_n_d, cpm=code_p_m, cph=code_p_h, cpd=code_p_d)

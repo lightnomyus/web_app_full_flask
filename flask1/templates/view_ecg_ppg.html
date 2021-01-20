@@ -1,0 +1,304 @@
+{% extends 'base_bootstrap.html' %}
+
+
+{% block page_title %}
+    <!-- Script for Chart.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
+
+    {% if title %}
+        <title>Gab-{{ title }}</title>
+    {% else %}
+        <title>Gab-Home</title>
+    {% endif %}
+{% endblock %}
+
+
+{% block content_customized %}
+    Patient Name = {{ p_name }}.
+    <br>
+    Patient ID = {{ p_id }}.
+    <br>
+    Doctor Name = {{ d_name }}
+    <br>
+    Record Time: {{ st.strftime('%A, %d-%m-%Y\t %H:%M:%S') }} - {{ updated.strftime('%H:%M:%S [WIB]') }}.
+    <br>
+    Heart Rate = {{ hr }} bpm.
+    <br>
+    ECG Graph:
+    <canvas id="myChart1" width="5500" height="350" style="background-color: #FFFFFF" ></canvas>
+    <p id="caption">Grid : 1 box = 0.5mV = 0.2 second.</p>
+    <br>
+    PPG Graph:
+    <canvas id="myChart2" width="5500" height="150" style="background-color: #FFFFFF" ></canvas>
+    <p id="caption">Grid : Y-axis = 0.2 second, X-axis = auto-scale with normalized data.</p>
+    <div class="btn-group">
+        <a href="{{ url_for('ecg_page', code_option=cpm, ecg_id=prev_min) }}" class="btn btn-primary">Prev Minute</a>
+        <a href="{{ url_for('ecg_page', code_option=cnm, ecg_id=next_min) }}" class="btn btn-primary">Next Minute</a>
+    </div>
+    <br>
+    <br>
+    <div class="btn-group">
+        <a href="{{ url_for('ecg_page', code_option=cph, ecg_id=prev_hour) }}" class="btn btn-primary">Prev Hour</a>
+        <a href="{{ url_for('ecg_page', code_option=cnh, ecg_id=next_hour) }}" class="btn btn-primary">Next Hour</a>
+    </div>
+    <br>
+    <br>
+    <div class="btn-group">
+        <a href="{{ url_for('ecg_page', code_option=cpd, ecg_id=prev_day) }}" class="btn btn-primary">Prev Day</a>
+        <a href="{{ url_for('ecg_page', code_option=cnd, ecg_id=next_day) }}" class="btn btn-primary">Next Day</a>
+    </div>
+{% endblock %}
+
+{% block additional_scripts %}
+    <script>
+        // Global parameters:
+        // do not resize the chart canvas when its container does (keep at 600x400px)
+        Chart.defaults.global.responsive = false;
+        Chart.defaults.global.defaultColor = '#FFFFFF'; //default color
+        Chart.defaults.global.defaultFontColor = '#000000';
+        Chart.defaults.global.defaultFontFamily = 'Helvetica';
+        Chart.defaults.global.defaultFontSize = 16;
+
+        //define chart data
+        const chartData1 =
+        {
+            datasets:
+            [{
+                data: {{ val1 }},
+                label: 'Channel 1',
+                fill: false,
+                backgroundColor: '#FFFFFF',
+                borderColor: '#000000',
+                //borderCapStyle: 'butt',
+                //borderDash: [],
+                //borderJoinStyle: 'miter',
+                pointBackgroundColor: '#000000',
+                pointBorderWidth: 0.1,
+                pointRadius: 1,
+                borderWidth: 2,
+                spanGaps: true,
+                showLines: true
+            },
+            {
+                data: {{ val2 }},
+                label: 'Channel 2',
+                fill: false,
+                backgroundColor: '#FFFFFF',
+                borderColor: '#000000',
+                pointBackgroundColor: '#000000',
+                pointBorderWidth: 0.1,
+                pointRadius: 1,
+                borderWidth: 2,
+                spanGaps: true,
+                showLines: true
+            },
+            {
+                data: {{ val3 }},
+                label: 'Channel 3',
+                fill: false,
+                backgroundColor: '#FFFFFF',
+                borderColor: '#000000',
+                pointBackgroundColor: '#000000',
+                pointBorderWidth: 0.1,
+                pointRadius: 1,
+                borderWidth: 2,
+                spanGaps: true,
+                showLines: true
+            }]
+        }
+
+        const chartData2 =
+        {
+            datasets:
+            [{
+                data: {{ val4 }},
+                label: 'PPG',
+                fill: false,
+                backgroundColor: '#FFFFFF',
+                borderColor: '#000000',
+                pointBackgroundColor: '#000000',
+                pointBorderWidth: 0.1,
+                pointRadius: 1,
+                borderWidth: 2,
+                spanGaps: true,
+                showLines: true
+            }]
+        }
+
+        // get chart canvas
+        const ctx = document.getElementById("myChart1").getContext('2d');
+        const ctx2 = document.getElementById("myChart2").getContext("2d");
+        //const context = ctx.getContext('2d');
+        //context.save();
+        //context.globalCompositeOperation = 'destination-over';
+        //context.fillStyle = "#FFFFFF";
+        //context.fillRect(0, 0, ctx.width, ctx.height);
+        //context.restore();
+
+        // create the chart using the chart canvas
+        const myChart1 = new Chart(ctx,
+            {
+                type: 'scatter',
+                data: chartData1,
+                options:
+                {
+                    title:
+                    {
+                        display: false,
+                        text: 'ECG SIMULATION',
+                        fontSize: 32
+                    },
+                    legend:
+                    {
+                        display: false,
+                        position: 'top',
+                        align: 'center'
+                    },
+                    events: ['click'],
+                    onClick: {},
+                    animation:
+                    {
+                        duration: 0
+                    },
+                    hover:
+                    {
+                        animationDuration: 0
+                    },
+                    responsiveAnimationDuration: 0,
+                    scales:
+                    {
+                        xAxes:
+                        [{
+                            display: true,
+                            gridLines: {
+                                display: true,
+                                color: '#FF0000',
+                                lineWidth: 1
+                            },
+                            ticks:
+                            {
+                                callback: function(value, index, values)
+                                {
+                                    return '';//delete this callback to view original ticks
+                                },
+                                //beginAtZero:true,
+                                //maxTicksLimit : 5,
+                                min: 0.0,
+                                max: 60.0,
+                                stepSize: 0.2
+
+                            }
+                        }],
+
+                        yAxes:
+                        [{
+                            display: true,
+                            gridLines:
+                            {
+                                display: true,
+                                color: '#FF0000',
+                                lineWidth: 1
+                            },
+                            ticks:
+                            {
+                                callback: function(value, index, values)
+                                {
+                                    return '';
+                                },
+                                min: -3.0,
+                                max: 5.0,
+                                stepSize: 0.5
+                            },
+                            scaleLabel:
+                            {
+                                display: true,
+                                labelString: 'CH. 3    |    CH. 2    |    CH. 1'
+                            }
+                        }]
+                    }
+                }
+            }
+        );
+
+        const myChart2 = new Chart(ctx2,
+            {
+                type: 'scatter',
+                data: chartData2,
+                options:
+                {
+                    title:
+                    {
+                        display: false,
+                        text: 'PPG SIMULATION',
+                        fontSize: 32
+                    },
+                    legend:
+                    {
+                        display: false,
+                        position: 'top',
+                        align: 'center'
+                    },
+                    events: ['click'],
+                    onClick: {},
+                    animation:
+                    {
+                        duration: 0
+                    },
+                    hover:
+                    {
+                        animationDuration: 0
+                    },
+                    responsiveAnimationDuration: 0,
+                    scales:
+                    {
+                        xAxes:
+                        [{
+                            display: true,
+                            gridLines: {
+                                display: true,
+                                color: '#FF0000',
+                                lineWidth: 1
+                            },
+                            ticks:
+                            {
+                                callback: function(value, index, values)
+                                {
+                                    return '';//delete this callback to view original ticks
+                                },
+                                //beginAtZero:true,
+                                //maxTicksLimit : 5,
+                                min: 0.0,
+                                max: 60.0,
+                                stepSize: 0.2
+
+                            }
+                        }],
+
+                        yAxes:
+                        [{
+                            display: true,
+                            gridLines:
+                            {
+                                display: true,
+                                color: '#FF0000',
+                                lineWidth: 1
+                            },
+                            ticks:
+                            {
+                                min: 0.0,
+                                max: 1.0,
+                                stepSize: 0.2
+                            },
+                            scaleLabel:
+                            {
+                                display: false,
+                                labelString: 'PPG'
+                            }
+                        }]
+                    }
+                }
+            }
+        );
+
+    </script>
+{% endblock %}
