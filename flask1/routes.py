@@ -64,7 +64,7 @@ def patient_page(selected_id):
     # print(f"Patient ID = {result.patient_id}. n_rec = {result.n_rec}. Active? = {result.is_active}.")
     session["selected_patient_name"] = patient.patient_name
     session["selected_patient_id"] = patient.patient_id
-    return render_template('patient.html', title='patient', patient=patient, summary_rec_list=recording)
+    return render_template('patient.html', title='Patient', patient=patient, summary_rec_list=recording)
 
 
 @app.route('/detail/<int:active_patient_id>/<int:active_rec>', endpoint='detail_page')
@@ -92,7 +92,7 @@ def detail_page(active_patient_id, active_rec):
         local_doc = session["selected_doctor_name"]
     session["selected_n_rec"] = active_rec
     session["list_of_rec"] = list_id
-    return render_template('detail.html', title='detail', rec_list=rec_session, p_name=local_name, p_id=local_id,
+    return render_template('detail.html', title='Detail', rec_list=rec_session, p_name=local_name, p_id=local_id,
                            d_name=local_doc, values=plot1, labels=times, legend=plot_legend, rec_id=list_id)
 
 
@@ -212,9 +212,9 @@ def ecg_page(code_option, ecg_id):
         # time to plot ecg
         ch1, ch2, ch3, ppg = load_from_file('flask1/temp1.csv')
     # debug
-    print(f"current record_id = {id_now}")
+    # print(f"current record_id = {id_now}")
 
-    return render_template('view_ecg_ppg.html', title='view-ecg', val1=ch1, val2=ch2, val3=ch3, val4=ppg, hr=id_hr,
+    return render_template('view_ecg_ppg.html', title='View-Record', val1=ch1, val2=ch2, val3=ch3, val4=ppg, hr=id_hr,
                            p_name=loc_name, p_id=loc_id, d_name=loc_doc, updated=upload, next_min=id_n_m, st=start_time,
                            prev_min=id_p_m, next_hour=id_n_h, prev_hour=id_p_h, next_day=id_n_d, prev_day=id_p_d,
                            cnm=code_n_m, cnh=code_n_h, cnd=code_n_d, cpm=code_p_m, cph=code_p_h, cpd=code_p_d)

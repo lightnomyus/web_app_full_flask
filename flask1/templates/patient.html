@@ -3,23 +3,24 @@
 
 {% block page_title %}
     {% if title %}
-        <title>Gab-{{ title }}</title>
+        <title>Lightholter-{{ title }}</title>
     {% else %}
-        <title>Gab-Home</title>
+        <title>Lightholter-Home</title>
     {% endif %}
 {% endblock %}
 
 
 {% block content_customized %}
-    <h1>This is Patient Page</h1>
-    <h2>Patient Details:</h2>
+    <h1>Patient Details:</h1>
     <br>
-    Patient Name = {{ patient.patient_name }}.   Patient ID = {{ patient.patient_id }}.
+    Name = {{ patient.patient_name }}.
     <br>
-    List of     Session(s):
+    ID = {{ patient.patient_id }}.
+    <br>
+    List of Session(s):
     <br>
     {% for i in summary_rec_list %}
-        <p>Session : <a href="{{ url_for('detail_page', active_patient_id=i.patient_id, active_rec=i.n_rec) }}">Session {{ i.n_rec }}</a>
+        <p><a href="{{ url_for('detail_page', active_patient_id=i.patient_id, active_rec=i.n_rec) }}">Session {{ i.n_rec }}</a>
 
         {% if i.is_active==true %}
             |  Status : Recording.
