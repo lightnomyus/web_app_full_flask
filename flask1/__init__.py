@@ -11,8 +11,15 @@ app = Flask(__name__, static_url_path='',
 
 # bootstrap = Bootstrap(app)
 app.config['SECRET_KEY'] = '65f295c5f593a281ba036c81a4ee5212'
+# MS SQL
 # app.config['SQLALCHEMY_DATABASE_URI'] = 'mssql://lightnomyus:L1ghtn0myu5@holterserver1.database.windows.net:1433/holter_database1?driver=SQL+Server'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql+psycopg2://lightnomyus@lightnomyus1998:L1ghtn0myu5@lightnomyus1998.postgres.database.azure.com:5432/postgres'
+
+# Old database server:
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql+psycopg2://lightnomyus@lightnomyus1998:L1ghtn0myu5@lightnomyus1998.postgres.database.azure.com:5432/postgres'
+
+# New database server
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql+psycopg2://lightnomyus@lightholterserver:L1ghtn0myu5@lightholterserver.postgres.database.azure.com:5432/postgres'
+
 db = SQLAlchemy(app)
 bcrypt = Bcrypt(app)
 login_manager = LoginManager(app)

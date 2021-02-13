@@ -26,7 +26,7 @@ def home_page():
 
 @app.route('/about', endpoint='about_page')
 def about_page():
-    return render_template('anu.html', title='About')
+    return render_template('about.html', title='About')
 
 
 @app.route('/', methods=['GET', 'POST'], endpoint='login_page')
