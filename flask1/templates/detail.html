@@ -156,8 +156,8 @@
             const activePoint = myChart.getElementAtEvent(evt);
             console.log(activePoint);
             const coordinate = activePoint[0]["_index"];
-            //const url_future = "https://light-holter2.azurewebsites.net/ecg/0/" + coordinate;
-            const url_future = "http://127.0.0.1:5000/ecg/0/" + coordinate;
+            const url_future = "https://light-holter2.azurewebsites.net/ecg/0/" + coordinate;
+            //const url_future = "http://127.0.0.1:5000/ecg/0/" + coordinate;
             //pointSelected.innerHTML = 'Index: ' + coordinate + " Record ID = " + url_future;
             //location.href = url_future;
             window.open(url_future)
