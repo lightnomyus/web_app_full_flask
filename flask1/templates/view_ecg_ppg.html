@@ -6,30 +6,30 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
 
     {% if title %}
-        <title>Gab-{{ title }}</title>
+        <title>Lightholter-{{ title }}</title>
     {% else %}
-        <title>Gab-Home</title>
+        <title>Lightholter-Home</title>
     {% endif %}
 {% endblock %}
 
 
 {% block content_customized %}
-    Patient Name = {{ p_name }}.
+    Patient Name = {{ p_name }}
     <br>
-    Patient ID = {{ p_id }}.
+    Patient ID = {{ p_id }}
     <br>
     Doctor Name = {{ d_name }}
     <br>
     Record Time: {{ st.strftime('%A, %d-%m-%Y\t %H:%M:%S') }} - {{ updated.strftime('%H:%M:%S [WIB]') }}.
     <br>
-    Heart Rate = {{ hr }} bpm.
+    Heart Rate = {{ hr }} bpm
     <br>
     ECG Graph:
-    <canvas id="myChart1" width="5500" height="350" style="background-color: #FFFFFF" ></canvas>
+    <canvas id="myChart1" width="5500" height="500" style="background-color: #FFFFFF" ></canvas>
     <p id="caption">Grid : 1 box = 0.5mV = 0.2 second.</p>
     <br>
     PPG Graph:
-    <canvas id="myChart2" width="5500" height="150" style="background-color: #FFFFFF" ></canvas>
+    <canvas id="myChart2" width="5500" height="130" style="background-color: #FFFFFF" ></canvas>
     <p id="caption">Grid : Y-axis = 0.2 second, X-axis = auto-scale with normalized data.</p>
     <div class="btn-group">
         <a href="{{ url_for('ecg_page', code_option=cpm, ecg_id=prev_min) }}" class="btn btn-primary">Prev Minute</a>
@@ -205,14 +205,14 @@
                                 {
                                     return '';
                                 },
-                                min: -3.0,
-                                max: 5.0,
+                                min: -6.0,
+                                max: 6.0,
                                 stepSize: 0.5
                             },
                             scaleLabel:
                             {
                                 display: true,
-                                labelString: 'CH. 3    |    CH. 2    |    CH. 1'
+                                labelString: 'CHANNEL 3     |     CHANNEL 2     |     CHANNEL 1'
                             }
                         }]
                     }

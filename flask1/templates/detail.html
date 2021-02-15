@@ -7,22 +7,22 @@
     <script src="http://cdnjs.cloudflare.com/ajax/libs/moment.js/2.13.0/moment.min.js"></script>
 
     {% if title %}
-        <title>Gab-{{ title }}</title>
+        <title>Lightholter-{{ title }}</title>
     {% else %}
-        <title>Gab-Home</title>
+        <title>Lightholter-Home</title>
     {% endif %}
 {% endblock %}
 
 
 {% block content_customized %}
-    Patient Name = {{ p_name }}.
+    Patient Name = {{ p_name }}
     <br>
-    Patient ID = {{ p_id }}.
+    Patient ID = {{ p_id }}
     <br>
     Doctor Name = {{ d_name }}
     <br>
     Heart Rate Preview:
-    <canvas id="myChart" width="1200" height="300"></canvas>
+    <canvas id="myChart" width="1300" height="300"></canvas>
     <!-- <p id="caption">Preview of patient's HR during this session</p> -->
     <br>
 {% endblock %}
@@ -140,7 +140,7 @@
                     {
                         label: function (tooltipItems, data)
                         {
-                            return tooltipItems.yLabel + ' degrees';
+                            return tooltipItems.yLabel + ' bpm';
                         }
                     }
                 }
@@ -156,8 +156,8 @@
             const activePoint = myChart.getElementAtEvent(evt);
             console.log(activePoint);
             const coordinate = activePoint[0]["_index"];
-            //const url_future = "http://light-holter2.azurewebsites.net/ecg/0/" + coordinate;
-            const url_future = "http://127.0.0.1:5000/ecg/0/" + coordinate;
+            const url_future = "https://light-holter2.azurewebsites.net/ecg/0/" + coordinate;
+            //const url_future = "http://127.0.0.1:5000/ecg/0/" + coordinate;
             //pointSelected.innerHTML = 'Index: ' + coordinate + " Record ID = " + url_future;
             //location.href = url_future;
             window.open(url_future)
