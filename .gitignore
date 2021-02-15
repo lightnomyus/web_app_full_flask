@@ -4,6 +4,9 @@ __pycache__/
 *$py.class
 .idea/
 
+# Flask session
+flask_session/*
+
 # C extensions
 *.so
 
