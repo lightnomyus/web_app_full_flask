@@ -11,6 +11,7 @@ app = Flask(__name__, static_url_path='',
             template_folder='templates', )
 
 # bootstrap = Bootstrap(app)
+app.config["SESSION_PERMANENT"] = False
 app.config['SESSION_TYPE'] = 'filesystem'
 app.config['SECRET_KEY'] = '65f295c5f593a281ba036c81a4ee5212'
 sess = Session()
